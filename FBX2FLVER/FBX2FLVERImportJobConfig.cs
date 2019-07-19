@@ -61,11 +61,9 @@ namespace FBX2FLVER
 
         public float NormalWValue = 0;
 
-        public byte FlverHeaderVertexIndexSize = 0x10;
-
         public bool UseDirectBoneIndices = false;
 
-        public int Unk0x5CValue = 0;
+        public byte Unk0x5CValue = 0;
         public int Unk0x68Value = 0;
 
         public Action<SoulsFormats.FLVER, SoulsFormats.TPF> BeforeSaveAction = null;
@@ -112,13 +110,11 @@ namespace FBX2FLVER
         {
             //Layout
             BufferLayout = new SoulsFormats.FLVER.BufferLayout();
-            int structOffset = 0;
 
             void Member(MBT t, MBS s, int i = 0)
             {
-                var newMemb = new SoulsFormats.FLVER.BufferLayout.Member(0, structOffset, t, s, i);
+                var newMemb = new SoulsFormats.FLVER.BufferLayout.Member(0, t, s, i);
                 BufferLayout.Add(newMemb);
-                structOffset += newMemb.Size;
             }
 
             //Texture Channel Setup
@@ -161,7 +157,6 @@ namespace FBX2FLVER
 
                     NormalWValue = 0;
                     PlaceholderMaterialShaderName = "P_Metal[DSB]";
-                    FlverHeaderVertexIndexSize = 0x10;
                     UseDirectBoneIndices = false;
                     Unk0x5CValue = 0;
                     Unk0x68Value = 0;
@@ -188,7 +183,6 @@ namespace FBX2FLVER
 
                     NormalWValue = 0;
                     PlaceholderMaterialShaderName = "P_Metal[DSB]";
-                    FlverHeaderVertexIndexSize = 0x10;
                     UseDirectBoneIndices = false;
                     Unk0x5CValue = 0;
                     Unk0x68Value = 0;
@@ -216,7 +210,6 @@ namespace FBX2FLVER
 
                     NormalWValue = -1;
                     PlaceholderMaterialShaderName = "W[Ibl][DSB]";
-                    FlverHeaderVertexIndexSize = 0x10;
                     UseDirectBoneIndices = false;
                     Unk0x5CValue = 1;
                     Unk0x68Value = 1;
@@ -245,7 +238,6 @@ namespace FBX2FLVER
 
                     NormalWValue = -1;
                     PlaceholderMaterialShaderName = "W[Ibl][DSB]";
-                    FlverHeaderVertexIndexSize = 0x10;
                     UseDirectBoneIndices = false;
                     Unk0x5CValue = 1;
                     Unk0x68Value = 1;
@@ -277,7 +269,6 @@ namespace FBX2FLVER
 
                     NormalWValue = -1;
                     PlaceholderMaterialShaderName = "P_WP[ARSN]";
-                    FlverHeaderVertexIndexSize = 0;
                     UseDirectBoneIndices = true;
                     Unk0x5CValue = 0;
                     Unk0x68Value = 4;
@@ -308,7 +299,6 @@ namespace FBX2FLVER
 
                     NormalWValue = -1;
                     PlaceholderMaterialShaderName = "P_BD[ARSN]";
-                    FlverHeaderVertexIndexSize = 0;
                     UseDirectBoneIndices = true;
                     Unk0x5CValue = 0;
                     Unk0x68Value = 4;

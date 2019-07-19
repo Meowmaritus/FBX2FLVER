@@ -341,7 +341,6 @@ namespace FBX2FLVER
             sb.AppendLine($"    [TPF Flag 2]: {checkImporter.JOBCONFIG.TpfFlag2}");
             sb.AppendLine($"    [Normal W-Field Value]: {checkImporter.JOBCONFIG.NormalWValue}");
             sb.AppendLine($"    [Placeholder Material Definition (MTD) Name]: '{checkImporter.JOBCONFIG.PlaceholderMaterialShaderName}.mtd'");
-            sb.AppendLine($"    [FLVER Header Vertex Index Size]: {checkImporter.JOBCONFIG.FlverHeaderVertexIndexSize}");
             sb.AppendLine($"    [Use Non-Relative Bone Indices]: {checkImporter.JOBCONFIG.UseDirectBoneIndices}");
             sb.AppendLine($"    [Unknown Value at 0x5C Offset in FLVER]: {checkImporter.JOBCONFIG.Unk0x5CValue}");
             sb.AppendLine($"    [Unknown Value at 0x68 Offset in FLVER]: {checkImporter.JOBCONFIG.Unk0x68Value}");

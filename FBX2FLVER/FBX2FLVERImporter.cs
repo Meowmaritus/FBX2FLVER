@@ -682,7 +682,7 @@ namespace FBX2FLVER
 
                         foreach (var thing in matTextures)
                         {
-                            placeholderGhettoMaterial.Textures.Add(new SoulsFormats.FLVER.Texture(thing.Key, thing.Value, 1.0f, 1.0f, 1, true, 0, 0, 0));
+                            placeholderGhettoMaterial.Textures.Add(new SoulsFormats.FLVER.Texture(thing.Key, thing.Value, System.Numerics.Vector2.One, 1, true, 0, 0, 0));
                             //placeholderGhettoMaterial.GXIndex = flverMesh.MaterialIndex;
                             //flver.GXLists.Add(new List<SoulsFormats.FLVER.GXItem>() { new SoulsFormats.FLVER.GXItem(0, 0, new byte[] { 1, 0, 0, 0, 102, 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 100, 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 101, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 102, 0, 0, 0, 101, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 101, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 127, 100, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }) });
                         }
@@ -1230,7 +1230,6 @@ namespace FBX2FLVER
             flver.Header.BoundingBoxMax = new System.Numerics.Vector3(1,1,1);
             flver.Header.BoundingBoxMin = new System.Numerics.Vector3(-1,-1,-1);
 
-            flver.Header.VertexIndicesSize = JOBCONFIG.FlverHeaderVertexIndexSize;
             flver.Header.Unk5C = JOBCONFIG.Unk0x5CValue;
             flver.Header.Unk68 = JOBCONFIG.Unk0x68Value;
 
