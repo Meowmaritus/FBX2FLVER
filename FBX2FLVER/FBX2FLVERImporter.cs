@@ -259,16 +259,15 @@ namespace FBX2FLVER
             if (!LoadFbxIntoFlver(fbx, flver, flverMeshNameMap, tpf))
             {
                 PrintError("Import failed.");
+                OnImportEnding();
                 return false;
             }
             else
             {
                 Print("Import complete.");
+                OnImportEnding();
+                return true;
             }
-
-            OnImportEnding();
-
-            return true;
         }
 
         bool LoadFbxIntoFlver(NodeContent fbx, SoulsFormats.FLVER flver, Dictionary<SoulsFormats.FLVER.Mesh, string> flverSubmeshNameMap, SoulsFormats.TPF tpf)
@@ -649,6 +648,12 @@ namespace FBX2FLVER
                         }
 
                         var mtdRequiredTextures = JOBCONFIG.MaterialLibrary.GetRequiredTextures(mtdName);
+
+                        if (mtdRequiredTextures == null)
+                        {
+                            PrintError($"MTD '{mtdName}' was not found in MTDBND.");
+                            return false;
+                        }
 
                         var mtdMissingTextures = new List<string>();
 

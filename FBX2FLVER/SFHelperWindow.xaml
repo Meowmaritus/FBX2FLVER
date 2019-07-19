@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FBX2FLVER"
         mc:Ignorable="d"
-        Title="Select File Inside BND Archive" Height="300" Width="400" WindowStartupLocation="CenterOwner">
+        Title="Select File Inside BND Archive" Height="300" Width="400" WindowStartupLocation="CenterOwner" WindowStyle="None" >
     <Grid>
-        <ListView x:Name="ListViewBNDFiles" Margin="0,0,0,29" MouseDoubleClick="ListViewBNDFiles_MouseDoubleClick" />
-        <Button x:Name="ButtonSelect" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="20" Width="144" Margin="0,0,4,4" Content="Select" Click="ButtonSelect_Click"/>
+        <ListView x:Name="ListViewBNDFiles" Margin="0,0,0,29" MouseDoubleClick="ListViewBNDFiles_MouseDoubleClick" SelectionChanged="ListViewBNDFiles_SelectionChanged"/>
+        <Button x:Name="ButtonSelect" IsEnabled="False" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="20" Width="144" Margin="0,0,4,4" Content="Select" Click="ButtonSelect_Click"/>
     </Grid>
 </Window>

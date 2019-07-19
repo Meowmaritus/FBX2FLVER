@@ -39,7 +39,10 @@ namespace FBX2FLVER
 
         public List<string> GetRequiredTextures(string mtdName)
         {
-            return MTDsAndRequiredChannels[mtdName];
+            if (MTDsAndRequiredChannels.ContainsKey(mtdName))
+                return MTDsAndRequiredChannels[mtdName];
+            else
+                return null;
         }
 
         private void RegisterMTDInfo(string mtdName, byte[] mtdBytes)

@@ -45,5 +45,10 @@ namespace FBX2FLVER
             Result = (string)(((Label)ListViewBNDFiles.SelectedItem).Content);
             Close();
         }
+
+        private void ListViewBNDFiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ButtonSelect.IsEnabled = true;
+        }
     }
 }
