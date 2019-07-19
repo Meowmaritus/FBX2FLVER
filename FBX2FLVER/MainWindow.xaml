@@ -1,0 +1,107 @@
+﻿<Window x:Class="FBX2FLVER.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FBX2FLVER"
+        mc:Ignorable="d"
+        Title="FBX2FLVER Beta V0.1.3" Height="480" Width="1000" MinHeight="480" MinWidth="720"
+        Closing="Window_Closing" Icon="Icon.png"
+        
+        >
+    <Grid Name="MainGrid" Margin="8,8,8,8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" MinWidth="200"/>
+            <ColumnDefinition Width="0" />
+            <ColumnDefinition Width="*" MinWidth="128" />
+            <ColumnDefinition Width="128" MinWidth="128" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        
+        <!--<GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Stretch" Grid.RowSpan="7"/>-->
+
+
+        <Label Grid.Column="0" Grid.Row="0" Content=".MTDBND[.DCX] Path:" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0" HorizontalContentAlignment="Right" Margin="8,0,8,0"/>
+        <TextBox Name="TextBoxMTDBNDPath" Grid.Column="2" Grid.Row="0" VerticalContentAlignment="Center"/>
+        <Button Name="ButtonBrowseMTDBNDPath" Grid.Column="3" Grid.Row="0" Content="Browse" Click="ButtonBrowseMTDBNDPath_Click"/>
+
+        <Label Grid.Column="0" Grid.Row="1" Content="Game / Model Type Preset:" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0"  HorizontalContentAlignment="Right" Margin="8,0,8,0"/>
+        <ComboBox Name="ComboBoxGameSelect" Grid.Column="2" Grid.Row="1" VerticalContentAlignment="Center"/>
+        <Button Name="ButtonViewGamePresetInfo" Grid.Column="3" Grid.Row="1" Content="Preset Details" Click="ButtonViewGamePresetInfo_Click"/>
+
+        <Label Grid.Column="0" Grid.Row="2" Content=".FBX Path:" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0"  HorizontalContentAlignment="Right" Margin="8,0,8,0"/>
+        <TextBox Name="TextBoxFBXPath" Grid.Column="2" Grid.Row="2" VerticalContentAlignment="Center"/>
+        <Button Name="ButtonBrowseFBXPath" Grid.Column="3" Grid.Row="2" Content="Browse" Click="ButtonBrowseFBXPath_Click"/>
+
+        <Label Grid.Column="0" Grid.Row="3" Content=".FLVER (Model) Output Path:" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0" HorizontalContentAlignment="Right" Margin="8,0,8,0" />
+        <TextBox Name="TextBoxFLVEROutputMain" Grid.Column="2" Grid.Row="3" VerticalContentAlignment="Center"/>
+        <Button Name="ButtonBrowseFLVEROutputMain" Grid.Column="3" Grid.Row="3" Content="Browse" Click="ButtonBrowseFLVEROutputMain_Click"/>
+
+        <Label Grid.Column="0" Grid.Row="4" Content=".TPF (Textures) Output Path:" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0" HorizontalContentAlignment="Right" Margin="8,0,8,0" />
+        <TextBox Name="TextBoxTPFOutputMain" Grid.Column="2" Grid.Row="4" VerticalContentAlignment="Center"/>
+        <Button Name="ButtonBrowseTPFOutputMain" Grid.Column="3" Grid.Row="4" Content="Browse" Click="ButtonBrowseTPFOutputMain_Click"/>
+
+        <Label Grid.Column="0" Grid.Row="5" Content="Import Scale Percent:" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0" HorizontalContentAlignment="Right" Margin="8,0,8,0" />
+        <TextBox Name="TextBoxImportScalePercent" Grid.Column="2" Grid.Row="5" VerticalContentAlignment="Center" Text="100"/>
+
+        <Label Grid.Column="0" Grid.Row="6" Content="Import Skeleton from FLVER:" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0" HorizontalContentAlignment="Right" Margin="8,0,8,0" />
+        <TextBox Name="TextBoxImportSkeletonFLVER" Grid.Column="2" Grid.Row="6" VerticalContentAlignment="Center"/>
+        <Button Name="ButtonBrowseImportSkeletonFLVER" Grid.Column="3" Grid.Row="6" Content="Browse" Click="ButtonBrowseImportSkeletonFLVER_Click"/>
+        
+        <Button Name="ButtonIMPORT" Grid.Column="3" Grid.Row="8" Content="IMPORT" Click="ButtonIMPORT_Click" FontWeight="Bold"/>
+
+        <Label Grid.Row="8" Content="Importer Output:" FontWeight="Bold" Padding="0" VerticalContentAlignment="Bottom" Margin="8,0,8,0" />
+
+        <RichTextBox
+            Margin="8"
+            x:Name="TextBoxConsoleOutput"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" 
+            FontFamily="Consolas"
+            VerticalScrollBarVisibility="Visible"
+            IsReadOnly="True" 
+            Grid.Row="9"
+            Grid.ColumnSpan="4"
+            Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" 
+        
+            Padding="8,8,8,8"
+            
+            TextOptions.TextHintingMode="Fixed"
+            TextOptions.TextFormattingMode="Ideal"
+            TextOptions.TextRenderingMode="ClearType"
+            >
+            <FlowDocument
+                x:Name="ConsoleOutputDocument"
+                />
+        </RichTextBox>
+
+        <Button 
+            x:Name="buttonDONATE"
+            Content="Donate to Meowmaritus"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Padding="4,0,4,0"
+            FontSize="12"
+            Foreground="Black"
+            Height="20" Click="ButtonDONATE_Click"
+            Background="LightGreen"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            Grid.Row="10"
+            />
+
+        <Label Grid.Row="10" Grid.ColumnSpan="3" Content="Created by Meowmaritus. Utilizes TKGP's SoulsFormats library." Padding="0" VerticalContentAlignment="Center" Margin="8,0,0,0"/>
+    </Grid>
+</Window>

@@ -1,0 +1,13 @@
+﻿<Window x:Class="FBX2FLVER.SFHelperWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FBX2FLVER"
+        mc:Ignorable="d"
+        Title="Select File Inside BND Archive" Height="300" Width="400" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <ListView x:Name="ListViewBNDFiles" Margin="0,0,0,29" MouseDoubleClick="ListViewBNDFiles_MouseDoubleClick" />
+        <Button x:Name="ButtonSelect" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="20" Width="144" Margin="0,0,4,4" Content="Select" Click="ButtonSelect_Click"/>
+    </Grid>
+</Window>
