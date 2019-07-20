@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FBX2FLVER"
         mc:Ignorable="d"
-        Title="FBX2FLVER Beta V0.1.4" Height="480" Width="1000" MinHeight="480" MinWidth="720"
+        Title="FBX2FLVER Beta V0.1.5" Height="480" Width="1000" MinHeight="480" MinWidth="720"
         Closing="Window_Closing" Icon="Icon.png"
         
         >

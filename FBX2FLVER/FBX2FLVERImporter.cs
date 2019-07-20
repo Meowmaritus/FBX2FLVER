@@ -1232,9 +1232,6 @@ namespace FBX2FLVER
 
             flver.BufferLayouts = new List<SoulsFormats.FLVER.BufferLayout> { JOBCONFIG.BufferLayout };
 
-            flver.Header.BoundingBoxMax = new System.Numerics.Vector3(1,1,1);
-            flver.Header.BoundingBoxMin = new System.Numerics.Vector3(-1,-1,-1);
-
             flver.Header.Unk5C = JOBCONFIG.Unk0x5CValue;
             flver.Header.Unk68 = JOBCONFIG.Unk0x68Value;
 
@@ -1258,7 +1255,8 @@ namespace FBX2FLVER
                     m.BoneIndices.Clear();
                 }
             }
-            
+
+            BoundingBoxSolver.FixAllBoundingBoxes(flver);
 
             foreach (var kvp in FBX_Meshes)
             {
