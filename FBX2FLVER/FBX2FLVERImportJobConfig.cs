@@ -286,7 +286,7 @@ namespace FBX2FLVER
 
                     Tex("Texture", "SAT_Equip_snp_Texture2D_5_AlbedoMap_0");
                     //Tex("Specular", "g_SpecularTexture");
-                    Tex("Reflection", "SAT_Equip_snp_Texture2D_3_ReflectanceMap_0");
+                    Tex("Specular", "SAT_Equip_snp_Texture2D_3_ReflectanceMap_0");
                     Tex("NormalMap", "SAT_Equip_snp_Texture2D_4_NormalMap_0");
 
                     HardcodeTex("SAT_Equip_snp_Texture2D_1_BlendMask", @"N:\FDP\data\Other\SysTex\SYSTEX_DummyBurn_m.tif");

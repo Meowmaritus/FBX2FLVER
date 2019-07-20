@@ -236,6 +236,8 @@ namespace FBX2FLVER
                 SFHelper.WriteFile(tpf, JOBCONFIG.OutputTpfPath);
             }
 
+            OnImportEnding();
+
             return result;
         }
 
@@ -253,19 +255,26 @@ namespace FBX2FLVER
             var context = new FBX2FLVERContentImporterContext();
             var fbx = fbxImporter.Import(JOBCONFIG.FBXPath, context);
 
-            JOBCONFIG.LoadMTDBND(JOBCONFIG.MTDBNDPath, !SoulsFormats.BND3.Is(JOBCONFIG.MTDBNDPath));
+            try
+            {
+                JOBCONFIG.LoadMTDBND(JOBCONFIG.MTDBNDPath, !SoulsFormats.BND3.Is(JOBCONFIG.MTDBNDPath));
+            }
+            catch (Exception ex)
+            {
+                PrintError($"Error while loading material definitions:\n\n{ex}");
+                return false;
+            }
+            
             JOBCONFIG.ChooseGamePreset(JOBCONFIG.Preset);
 
             if (!LoadFbxIntoFlver(fbx, flver, flverMeshNameMap, tpf))
             {
                 PrintError("Import failed.");
-                OnImportEnding();
                 return false;
             }
             else
             {
                 Print("Import complete.");
-                OnImportEnding();
                 return true;
             }
         }
