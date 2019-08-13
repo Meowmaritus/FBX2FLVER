@@ -166,42 +166,60 @@ namespace FBX2FLVER
 
         private void ButtonIMPORT_Click(object sender, RoutedEventArgs e)
         {
-            try
+            ConsoleOutputDocument.Blocks.Clear();
+
+            var thread = new Thread(new ThreadStart(() =>
             {
-                SaveConfig();
-
-                Importer = new FBX2FLVERImporter();
-                Importer.JOBCONFIG.MTDBNDPath = TextBoxMTDBNDPath.Text;
-                Importer.JOBCONFIG.Preset = (FBX2FLVERImportJobConfig.FlverGamePreset)(ComboBoxGameSelect.SelectedItem);
-                Importer.JOBCONFIG.FBXPath = TextBoxFBXPath.Text;
-                Importer.JOBCONFIG.OutputFlverPath = TextBoxFLVEROutputMain.Text;
-                Importer.JOBCONFIG.OutputTpfPath = TextBoxTPFOutputMain.Text;
-
-                if (float.TryParse(TextBoxImportScalePercent.Text, out float scalePercent))
+                try
                 {
-                    Importer.JOBCONFIG.Scale = scalePercent / 100;
+                    Dispatcher.Invoke(() =>
+                    {
+                        SaveConfig();
+
+                        Importer = new FBX2FLVERImporter();
+                        Importer.JOBCONFIG.MTDBNDPath = TextBoxMTDBNDPath.Text;
+                        Importer.JOBCONFIG.Preset = (FBX2FLVERImportJobConfig.FlverGamePreset)(ComboBoxGameSelect.SelectedItem);
+                        Importer.JOBCONFIG.FBXPath = TextBoxFBXPath.Text;
+                        Importer.JOBCONFIG.OutputFlverPath = TextBoxFLVEROutputMain.Text;
+                        Importer.JOBCONFIG.OutputTpfPath = TextBoxTPFOutputMain.Text;
+
+                        if (float.TryParse(TextBoxImportScalePercent.Text, out float scalePercent))
+                        {
+                            Importer.JOBCONFIG.Scale = scalePercent / 100;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Value for Import Scale Percent is not a number.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        Importer.JOBCONFIG.ImportSkeletonFromFLVER = TextBoxImportSkeletonFLVER.Text;
+
+                        Importer.InfoTextOutputted += Importer_InfoTextOutputted;
+                        Importer.WarningTextOutputted += Importer_WarningTextOutputted;
+                        Importer.ErrorTextOutputted += Importer_ErrorTextOutputted;
+
+                        Importer.ImportStarted += Importer_ImportStarted;
+                        Importer.ImportEnding += Importer_ImportEnding;
+                    });
+
+
+
+
+                    Importer.Import();
+                    //Dispatcher.Invoke(() =>
+                    //{
+                    //    Importer.Import();
+                    //});
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Value for Import Scale Percent is not a number.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
+                    AddRunToConsole($"An error occurred while trying to import:\n\n{ex.ToString()}", Colors.Red, Colors.Black, isBold: true);
                 }
+            }));
 
-                Importer.JOBCONFIG.ImportSkeletonFromFLVER = TextBoxImportSkeletonFLVER.Text;
-
-                Importer.InfoTextOutputted += Importer_InfoTextOutputted;
-                Importer.WarningTextOutputted += Importer_WarningTextOutputted;
-                Importer.ErrorTextOutputted += Importer_ErrorTextOutputted;
-
-                Importer.ImportStarted += Importer_ImportStarted;
-                Importer.ImportEnding += Importer_ImportEnding;
-
-                Importer.Import();
-            }
-            catch (Exception ex)
-            {
-                AddRunToConsole($"An error occurred while trying to import:\n\n{ex.ToString()}", Colors.Red, Colors.Black, isBold: true);
-            }
+            thread.IsBackground = true;
+            thread.Start();
         }
 
         private void Importer_ImportEnding(object sender, EventArgs e)

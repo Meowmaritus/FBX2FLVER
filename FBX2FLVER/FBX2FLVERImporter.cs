@@ -408,7 +408,8 @@ namespace FBX2FLVER
                 var skeleFlver = (SoulsFormats.FLVER2)(SFHelper.ReadFile<SoulsFormats.FLVER2>(null, JOBCONFIG.ImportSkeletonFromFLVER).File);
 
                 flver.Bones = skeleFlver.Bones;
-                flver.Dummies = skeleFlver.Dummies;
+                if (JOBCONFIG.ImportSkeletonFromFLVER_ImportDummies)
+                    flver.Dummies = skeleFlver.Dummies;
             }
 
             for (int i = 0; i < flver.Bones.Count; i++)

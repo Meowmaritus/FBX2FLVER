@@ -42,6 +42,8 @@ namespace FBX2FLVER
 
         public string ImportSkeletonFromFLVER = null;
 
+        public bool ImportSkeletonFromFLVER_ImportDummies = false;
+
         public bool IsDoubleSided { get; set; } = true;
         public bool GenerateBackup { get; set; } = true;
 
