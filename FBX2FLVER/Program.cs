@@ -8,7 +8,7 @@ namespace FBX2FLVER
 {
     class Program
     {
-        public static void DebugPrintBufferlayouts(SoulsFormats.FLVER f)
+        public static void DebugPrintBufferlayouts(SoulsFormats.FLVER2 f)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             int i = 0;
@@ -72,7 +72,7 @@ namespace FBX2FLVER
             importer.JOBCONFIG.Preset = FBX2FLVERImportJobConfig.FlverGamePreset.DS2Skinned;
             importer.JOBCONFIG.MTDBNDPath = @"C:\Program Files (x86)\Steam\steamapps\common\Dark Souls II Scholar of the First Sin\Game\material\allmaterialbnd.bnd";
             importer.JOBCONFIG.FBXPath = @"D:\FRPG_MOD\FBX Import Test\CJDS2TEST.FBX";
-            importer.JOBCONFIG.ScalePercent = 645;
+            importer.JOBCONFIG.Scale = 6.45f;
             //importer.JOBCONFIG.SkeletonRotation = new Microsoft.Xna.Framework.Vector3(0,gi 0, -Microsoft.Xna.Framework.MathHelper.PiOver2);
             //importer.JOBCONFIG.ImportSkeletonFromFLVER = @"C:\Program Files (x86)\Steam\steamapps\common\Dark Souls II Scholar of the First Sin\Game\model\parts\body\bd_6650_m-bnd\BD_6650_M.flv";
             importer.JOBCONFIG.OutputFlverPath = @"C:\Program Files (x86)\Steam\steamapps\common\Dark Souls II Scholar of the First Sin\Game\model\parts\body\bd_6750_m-bnd\BD_6750_M.flv";

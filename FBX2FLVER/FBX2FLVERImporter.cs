@@ -20,7 +20,7 @@ namespace FBX2FLVER
         public FBX2FLVERImportJobConfig JOBCONFIG = new FBX2FLVERImportJobConfig();
 
         const float FBX_IMPORT_SCALE_BASE = 1.0f / 100.0f;
-        public float FinalScaleMultiplier => (float)(FBX_IMPORT_SCALE_BASE * (JOBCONFIG.ScalePercent / 100.0));
+        public float FinalScaleMultiplier => (float)(FBX_IMPORT_SCALE_BASE * (JOBCONFIG.Scale));
 
         public readonly Solvers.BoneSolver BoneSolver;
         public readonly Solvers.NormalSolver NormalSolver;
@@ -216,7 +216,9 @@ namespace FBX2FLVER
 
         public bool Import()
         {
-            var flver = new SoulsFormats.FLVER();
+            JOBCONFIG.ChooseGamePreset(JOBCONFIG.Preset);
+
+            var flver = new SoulsFormats.FLVER2();
             flver.Header.Version = JOBCONFIG.FlverVersion;
 
             var tpf = new SoulsFormats.TPF();
@@ -243,13 +245,13 @@ namespace FBX2FLVER
 
         
 
-        private bool ImportToFlver(SoulsFormats.FLVER flver, SoulsFormats.TPF tpf)
+        private bool ImportToFlver(SoulsFormats.FLVER2 flver, SoulsFormats.TPF tpf)
         {
             OnImportStarted();
 
             Print("Importing...");
 
-            var flverMeshNameMap = new Dictionary<SoulsFormats.FLVER.Mesh, string>();
+            var flverMeshNameMap = new Dictionary<SoulsFormats.FLVER2.Mesh, string>();
 
             var fbxImporter = new FbxImporter();
             var context = new FBX2FLVERContentImporterContext();
@@ -264,8 +266,6 @@ namespace FBX2FLVER
                 PrintError($"Error while loading material definitions:\n\n{ex}");
                 return false;
             }
-            
-            JOBCONFIG.ChooseGamePreset(JOBCONFIG.Preset);
 
             if (!LoadFbxIntoFlver(fbx, flver, flverMeshNameMap, tpf))
             {
@@ -279,11 +279,11 @@ namespace FBX2FLVER
             }
         }
 
-        bool LoadFbxIntoFlver(NodeContent fbx, SoulsFormats.FLVER flver, Dictionary<SoulsFormats.FLVER.Mesh, string> flverSubmeshNameMap, SoulsFormats.TPF tpf)
+        bool LoadFbxIntoFlver(NodeContent fbx, SoulsFormats.FLVER2 flver, Dictionary<SoulsFormats.FLVER2.Mesh, string> flverSubmeshNameMap, SoulsFormats.TPF tpf)
         {
             var FBX_Bones = new List<NodeContent>();
             var FBX_RootBones = new List<NodeContent>();
-            var FBX_Meshes = new Dictionary<SoulsFormats.FLVER.Mesh, MeshContent>();
+            var FBX_Meshes = new Dictionary<SoulsFormats.FLVER2.Mesh, MeshContent>();
 
             //var FLVER_VertexStructLayoutChecks = new List<FlverVertexStructLayoutCheck>();
 
@@ -293,7 +293,7 @@ namespace FBX2FLVER
             {
                 if (fbxComponent is MeshContent meshContent)
                 {
-                    FBX_Meshes.Add(new SoulsFormats.FLVER.Mesh(), meshContent);
+                    FBX_Meshes.Add(new SoulsFormats.FLVER2.Mesh(), meshContent);
                 }
                 else if (fbxComponent is NodeContent boneContent)
                 {
@@ -325,14 +325,14 @@ namespace FBX2FLVER
 
             if (fbx is MeshContent topLevelMeshContent)
             {
-                FBX_Meshes.Add(new SoulsFormats.FLVER.Mesh(), topLevelMeshContent);
+                FBX_Meshes.Add(new SoulsFormats.FLVER2.Mesh(), topLevelMeshContent);
             }
 
             var topLevelBoneIndices = new List<int>();
 
-            var flverRootBoneNameMap = new Dictionary<SoulsFormats.FLVER.Bone, string>();
+            var flverRootBoneNameMap = new Dictionary<SoulsFormats.FLVER2.Bone, string>();
 
-            var dummyFollowBoneMap = new Dictionary<(string nodeName, SoulsFormats.FLVER.Dummy dmy), string>();
+            var dummyFollowBoneMap = new Dictionary<(string nodeName, SoulsFormats.FLVER2.Dummy dmy), string>();
 
             foreach (var boneContent in FBX_RootBones)
             {
@@ -384,7 +384,7 @@ namespace FBX2FLVER
             //    });
             //}
 
-            var bonesByName = new Dictionary<string, SoulsFormats.FLVER.Bone>();
+            var bonesByName = new Dictionary<string, SoulsFormats.FLVER2.Bone>();
 
             //if (ImportSkeletonPath != null)
             //{
@@ -405,7 +405,7 @@ namespace FBX2FLVER
 
             if (!string.IsNullOrEmpty(JOBCONFIG.ImportSkeletonFromFLVER))
             {
-                var skeleFlver = (SoulsFormats.FLVER)(SFHelper.ReadFile<SoulsFormats.FLVER>(null, JOBCONFIG.ImportSkeletonFromFLVER).File);
+                var skeleFlver = (SoulsFormats.FLVER2)(SFHelper.ReadFile<SoulsFormats.FLVER2>(null, JOBCONFIG.ImportSkeletonFromFLVER).File);
 
                 flver.Bones = skeleFlver.Bones;
                 flver.Dummies = skeleFlver.Dummies;
@@ -445,7 +445,7 @@ namespace FBX2FLVER
                 var flverMesh = kvp.Key;
                 var fbxMesh = kvp.Value;
 
-                var bonesReferencedByThisMesh = new List<SoulsFormats.FLVER.Bone>();
+                var bonesReferencedByThisMesh = new List<SoulsFormats.FLVER2.Bone>();
 
                 var submeshHighQualityNormals = new List<Vector3>();
                 var submeshHighQualityTangents = new List<Vector4>();
@@ -465,7 +465,7 @@ namespace FBX2FLVER
                             FACE SET ADDING/SPLITTING
                         */
                         {
-                            var faceSet = new SoulsFormats.FLVER.FaceSet();
+                            var faceSet = new SoulsFormats.FLVER2.FaceSet();
 
                             faceSet.CullBackfaces = !JOBCONFIG.IsDoubleSided;
 
@@ -475,7 +475,7 @@ namespace FBX2FLVER
                                 if (faceSet.Indices.Count >= FACESET_MAX_TRIANGLES * 3)
                                 {
                                     flverMesh.FaceSets.Add(faceSet);
-                                    faceSet = new SoulsFormats.FLVER.FaceSet();
+                                    faceSet = new SoulsFormats.FLVER2.FaceSet();
                                 }
                                 else
                                 {
@@ -689,14 +689,18 @@ namespace FBX2FLVER
 
                         flverMesh.MaterialIndex = flver.Materials.Count;
 
-                        var placeholderGhettoMaterial = new SoulsFormats.FLVER.Material(matName, mtdName + ".mtd", 0);
+                        var placeholderGhettoMaterial = new SoulsFormats.FLVER2.Material(matName, mtdName + ".mtd", 0);
                         //placeholderGhettoMaterial.Textures.Add(new SoulsFormats.FLVER.Texture("g_Diffuse", "BD_M_body.dds", 1.0f, 1.0f, 1, true, 0, 0, 0));
                         //placeholderGhettoMaterial.Textures.Add(new SoulsFormats.FLVER.Texture("g_Specular", "BD_M_body_s.dds", 1.0f, 1.0f, 1, true, 0, 0, 0));
                         //placeholderGhettoMaterial.Textures.Add(new SoulsFormats.FLVER.Texture("g_Bumpmap", "BD_M_body_n.dds", 1.0f, 1.0f, 1, true, 0, 0, 0));
 
+                        placeholderGhettoMaterial.GXIndex = flver.GXLists.Count;
+
+                        flver.GXLists.Add(new SoulsFormats.FLVER2.GXList());
+
                         foreach (var thing in matTextures)
                         {
-                            placeholderGhettoMaterial.Textures.Add(new SoulsFormats.FLVER.Texture(thing.Key, thing.Value, System.Numerics.Vector2.One, 1, true, 0, 0, 0));
+                            placeholderGhettoMaterial.Textures.Add(new SoulsFormats.FLVER2.Texture(thing.Key, JOBCONFIG.FakeTextureDirectory + thing.Value, System.Numerics.Vector2.One, 1, true, 0, 0, 0));
                             //placeholderGhettoMaterial.GXIndex = flverMesh.MaterialIndex;
                             //flver.GXLists.Add(new List<SoulsFormats.FLVER.GXItem>() { new SoulsFormats.FLVER.GXItem(0, 0, new byte[] { 1, 0, 0, 0, 102, 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 100, 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 101, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 102, 0, 0, 0, 101, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 101, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 127, 100, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }) });
                         }
@@ -804,18 +808,18 @@ namespace FBX2FLVER
                             {
                                 switch (memb.Semantic)
                                 {
-                                    case SoulsFormats.FLVER.BufferLayout.MemberSemantic.Position: break;
-                                    case SoulsFormats.FLVER.BufferLayout.MemberSemantic.Normal: newVert.Normal = new System.Numerics.Vector4(0, 0, 0, JOBCONFIG.NormalWValue); break;
-                                    case SoulsFormats.FLVER.BufferLayout.MemberSemantic.Tangent: newVert.Tangents.Add(new System.Numerics.Vector4()); break;
-                                    case SoulsFormats.FLVER.BufferLayout.MemberSemantic.BoneIndices: newVert.BoneIndices = new int[] { 0, 0, 0, 0 }; break;
-                                    case SoulsFormats.FLVER.BufferLayout.MemberSemantic.BoneWeights: newVert.BoneWeights = new float[] { 0, 0, 0, 0 }; break;
-                                    case SoulsFormats.FLVER.BufferLayout.MemberSemantic.UV:
-                                        if (memb.Type == SoulsFormats.FLVER.BufferLayout.MemberType.UVPair)
+                                    case SoulsFormats.FLVER.LayoutSemantic.Position: break;
+                                    case SoulsFormats.FLVER.LayoutSemantic.Normal: newVert.Normal = new System.Numerics.Vector4(0, 0, 0, JOBCONFIG.NormalWValue); break;
+                                    case SoulsFormats.FLVER.LayoutSemantic.Tangent: newVert.Tangents.Add(new System.Numerics.Vector4()); break;
+                                    case SoulsFormats.FLVER.LayoutSemantic.BoneIndices: newVert.BoneIndices = new int[] { 0, 0, 0, 0 }; break;
+                                    case SoulsFormats.FLVER.LayoutSemantic.BoneWeights: newVert.BoneWeights = new float[] { 0, 0, 0, 0 }; break;
+                                    case SoulsFormats.FLVER.LayoutSemantic.UV:
+                                        if (memb.Type == SoulsFormats.FLVER.LayoutType.UVPair)
                                             newVert.UVs.Add(new System.Numerics.Vector3());
                                         newVert.UVs.Add(new System.Numerics.Vector3());
                                         break;
-                                    case SoulsFormats.FLVER.BufferLayout.MemberSemantic.VertexColor: newVert.Colors.Add(new SoulsFormats.FLVER.Vertex.Color(255, 255, 255, 255)); break;
-                                    case SoulsFormats.FLVER.BufferLayout.MemberSemantic.UnknownVector4A: newVert.UnknownVector4 = new byte[] { 0, 0, 0, 0 }; break;
+                                    case SoulsFormats.FLVER.LayoutSemantic.VertexColor: newVert.Colors.Add(new SoulsFormats.FLVER.VertexColor(255, 255, 255, 255)); break;
+                                    case SoulsFormats.FLVER.LayoutSemantic.Bitangent: newVert.Bitangent = System.Numerics.Vector4.Zero; break;
                                 }
                             }
 
@@ -897,7 +901,7 @@ namespace FBX2FLVER
                                 {
                                     var channelValue = (FbxPipeline.Vector2)channel[i];
 
-                                    var uv = new System.Numerics.Vector3(channelValue.X, channelValue.Y, 0);
+                                    var uv = new System.Numerics.Vector3(channelValue.X * JOBCONFIG.UVScaleX, channelValue.Y * JOBCONFIG.UVScaleY, 0);
 
                                     if (flverMesh.Vertices[i].UVs.Count > uvIndex)
                                     {
@@ -918,7 +922,7 @@ namespace FBX2FLVER
                                     if (isBaseUv)
                                     {
                                         submeshVertexHighQualityBaseUVs.Add(
-                                            new Vector2(channelValue.X, channelValue.Y));
+                                            new Vector2(uv.X, uv.Y));
                                     }
                                 }
                             }
@@ -1213,7 +1217,7 @@ namespace FBX2FLVER
                 }
 
 
-                flverMesh.VertexBuffers.Add(new SoulsFormats.FLVER.VertexBuffer(layoutIndex: 0));
+                flverMesh.VertexBuffers.Add(new SoulsFormats.FLVER2.VertexBuffer(layoutIndex: 0));
 
                 //if (flverMesh.NameBoneIndex < 0)
                 //{
@@ -1239,7 +1243,21 @@ namespace FBX2FLVER
             //FBX2FLVERTODO: Fix Bounding Boxes
             //BoundingBoxSolver.FixAllBoundingBoxes(flver);
 
-            flver.BufferLayouts = new List<SoulsFormats.FLVER.BufferLayout> { JOBCONFIG.BufferLayout };
+            flver.BufferLayouts = new List<SoulsFormats.FLVER2.BufferLayout>();
+
+            if (JOBCONFIG.OnlyCreate1BufferLayout)
+            {
+                flver.BufferLayouts.Add(JOBCONFIG.BufferLayout);
+            }
+            else
+            {
+                foreach (var mat in flver.Materials)
+                {
+                    flver.BufferLayouts.Add(JOBCONFIG.BufferLayout);
+                }
+            }
+
+            
 
             flver.Header.Unk5C = JOBCONFIG.Unk0x5CValue;
             flver.Header.Unk68 = JOBCONFIG.Unk0x68Value;
@@ -1275,49 +1293,49 @@ namespace FBX2FLVER
             return true;
         }
 
-        private void GeneratePlaceholderLODs(SoulsFormats.FLVER flver)
+        private void GeneratePlaceholderLODs(SoulsFormats.FLVER2 flver)
         {
             foreach (var submesh in flver.Meshes)
             {
-                var newFacesetsToAdd = new List<SoulsFormats.FLVER.FaceSet>();
+                var newFacesetsToAdd = new List<SoulsFormats.FLVER2.FaceSet>();
                 foreach (var faceset in submesh.FaceSets)
                 {
-                    var lod1 = new SoulsFormats.FLVER.FaceSet()
+                    var lod1 = new SoulsFormats.FLVER2.FaceSet()
                     {
                         CullBackfaces = faceset.CullBackfaces,
-                        Flags = SoulsFormats.FLVER.FaceSet.FSFlags.LodLevel1,
+                        Flags = SoulsFormats.FLVER2.FaceSet.FSFlags.LodLevel1,
                         TriangleStrip = faceset.TriangleStrip,
                         Indices = faceset.Indices
                     };
 
-                    var lod2 = new SoulsFormats.FLVER.FaceSet()
+                    var lod2 = new SoulsFormats.FLVER2.FaceSet()
                     {
                         CullBackfaces = faceset.CullBackfaces,
-                        Flags = SoulsFormats.FLVER.FaceSet.FSFlags.LodLevel2,
+                        Flags = SoulsFormats.FLVER2.FaceSet.FSFlags.LodLevel2,
                         TriangleStrip = faceset.TriangleStrip,
                         Indices = faceset.Indices
                     };
 
-                    var mblur = new SoulsFormats.FLVER.FaceSet()
+                    var mblur = new SoulsFormats.FLVER2.FaceSet()
                     {
                         CullBackfaces = faceset.CullBackfaces,
-                        Flags = SoulsFormats.FLVER.FaceSet.FSFlags.MotionBlur,
+                        Flags = SoulsFormats.FLVER2.FaceSet.FSFlags.MotionBlur,
                         TriangleStrip = faceset.TriangleStrip,
                         Indices = faceset.Indices
                     };
 
-                    var mblurlod1 = new SoulsFormats.FLVER.FaceSet()
+                    var mblurlod1 = new SoulsFormats.FLVER2.FaceSet()
                     {
                         CullBackfaces = faceset.CullBackfaces,
-                        Flags = SoulsFormats.FLVER.FaceSet.FSFlags.LodLevel1 | SoulsFormats.FLVER.FaceSet.FSFlags.MotionBlur,
+                        Flags = SoulsFormats.FLVER2.FaceSet.FSFlags.LodLevel1 | SoulsFormats.FLVER2.FaceSet.FSFlags.MotionBlur,
                         TriangleStrip = faceset.TriangleStrip,
                         Indices = faceset.Indices
                     };
 
-                    var mblurlod2 = new SoulsFormats.FLVER.FaceSet()
+                    var mblurlod2 = new SoulsFormats.FLVER2.FaceSet()
                     {
                         CullBackfaces = faceset.CullBackfaces,
-                        Flags = SoulsFormats.FLVER.FaceSet.FSFlags.LodLevel2 | SoulsFormats.FLVER.FaceSet.FSFlags.MotionBlur,
+                        Flags = SoulsFormats.FLVER2.FaceSet.FSFlags.LodLevel2 | SoulsFormats.FLVER2.FaceSet.FSFlags.MotionBlur,
                         TriangleStrip = faceset.TriangleStrip,
                         Indices = faceset.Indices
                     };

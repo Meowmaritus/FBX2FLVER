@@ -16,13 +16,13 @@ namespace FBX2FLVER.Solvers
             this.Importer = Importer;
         }
 
-        private Dictionary<FLVER.Vertex, List<FLVER.Bone>> PrecalculatedBoneLists = new Dictionary<FLVER.Vertex, List<FLVER.Bone>>();
+        private Dictionary<FLVER.Vertex, List<FLVER2.Bone>> PrecalculatedBoneLists = new Dictionary<FLVER.Vertex, List<FLVER2.Bone>>();
 
-        private List<FLVER.Bone> GetAllBonesReferencedByVertex(FLVER f, FLVER.Mesh m, FLVER.Vertex v)
+        private List<FLVER2.Bone> GetAllBonesReferencedByVertex(FLVER2 f, FLVER2.Mesh m, FLVER.Vertex v)
         {
             if (!PrecalculatedBoneLists.ContainsKey(v))
             {
-                List<FLVER.Bone> result = new List<FLVER.Bone>();
+                List<FLVER2.Bone> result = new List<FLVER2.Bone>();
 
                 foreach (var vertBoneIndex in v.BoneIndices)
                 {
@@ -46,7 +46,7 @@ namespace FBX2FLVER.Solvers
             return PrecalculatedBoneLists[v];
         }
 
-        private List<FLVER.Vertex> GetVerticesParentedToBone(FLVER f, FLVER.Bone b)
+        private List<FLVER.Vertex> GetVerticesParentedToBone(FLVER2 f, FLVER2.Bone b)
         {
             var result = new List<FLVER.Vertex>();
             foreach (var sm in f.Meshes)
@@ -69,9 +69,9 @@ namespace FBX2FLVER.Solvers
                 return new BoundingBox(Vector3.Zero, Vector3.Zero);
         }
 
-        Matrix GetParentBoneMatrix(FLVER f, FLVER.Bone bone)
+        Matrix GetParentBoneMatrix(FLVER2 f, FLVER2.Bone bone)
         {
-            FLVER.Bone parent = bone;
+            FLVER2.Bone parent = bone;
 
             var boneParentMatrix = Matrix.Identity;
 
@@ -102,7 +102,7 @@ namespace FBX2FLVER.Solvers
             return boneParentMatrix;
         }
 
-        private void SetBoneBoundingBox(FLVER f, FLVER.Bone b)
+        private void SetBoneBoundingBox(FLVER2 f, FLVER2.Bone b)
         {
             var bb = GetBoundingBox(GetVerticesParentedToBone(f, b).Select(v => new Vector3(v.Position.X, v.Position.Y, v.Position.Z)).ToList());
             if (bb.Max.LengthSquared() != 0 || bb.Min.LengthSquared() != 0)
@@ -118,7 +118,7 @@ namespace FBX2FLVER.Solvers
             }
         }
 
-        public void FixAllBoundingBoxes(FLVER f)
+        public void FixAllBoundingBoxes(FLVER2 f)
         {
             PrecalculatedBoneLists.Clear();
 
@@ -140,7 +140,7 @@ namespace FBX2FLVER.Solvers
                 if (bb.Max.LengthSquared() != 0 || bb.Min.LengthSquared() != 0)
                 {
                     submeshBBs.Add(bb);
-                    sm.BoundingBox = new FLVER.Mesh.BoundingBoxes();
+                    sm.BoundingBox = new FLVER2.Mesh.BoundingBoxes();
                     sm.BoundingBox.Min = bb.Min.ToNumerics();
                     sm.BoundingBox.Max = bb.Max.ToNumerics();
                 }

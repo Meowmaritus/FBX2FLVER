@@ -24,12 +24,12 @@ namespace FBX2FLVER.Solvers
         //    return (new Vector3(-length / 2, -thickness, -thickness), new Vector3(length / 2, thickness, thickness));
         //}
 
-        public int SolveBone(SoulsFormats.FLVER flver,
+        public int SolveBone(SoulsFormats.FLVER2 flver,
             NodeContent fbx,
             NodeContent boneContent,
-            int parentIndex, Dictionary<(string nodeName, SoulsFormats.FLVER.Dummy dmy), string> dummyFollowBones)
+            int parentIndex, Dictionary<(string nodeName, SoulsFormats.FLVER2.Dummy dmy), string> dummyFollowBones)
         {
-            var newBone = new SoulsFormats.FLVER.Bone();
+            var newBone = new SoulsFormats.FLVER2.Bone();
 
             newBone.Name = boneContent.Name;
 
@@ -209,7 +209,7 @@ namespace FBX2FLVER.Solvers
 
             if (newBone.Name.ToUpper().StartsWith("DUMMY") && newBone.Name.Contains("<") && newBone.Name.Contains(">"))
             {
-                var dmy = new SoulsFormats.FLVER.Dummy();
+                var dmy = new SoulsFormats.FLVER2.Dummy();
                 dmy.DummyBoneIndex = (short)parentIndex;
 
                 //var dmyParentEuler = Util.GetEuler(boneContent.Parent.Transform);

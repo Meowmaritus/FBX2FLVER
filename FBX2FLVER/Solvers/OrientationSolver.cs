@@ -15,7 +15,7 @@ namespace FBX2FLVER.Solvers
             this.Importer = Importer;
         }
 
-        public void SolveOrientation(SoulsFormats.FLVER flver, bool solveBones)
+        public void SolveOrientation(SoulsFormats.FLVER2 flver, bool solveBones)
         {
             foreach (var flverMesh in flver.Meshes)
             {

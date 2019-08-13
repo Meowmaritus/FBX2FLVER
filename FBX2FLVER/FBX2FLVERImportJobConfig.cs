@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MBT = SoulsFormats.FLVER.BufferLayout.MemberType;
-using MBS = SoulsFormats.FLVER.BufferLayout.MemberSemantic;
+using MBT = SoulsFormats.FLVER.LayoutType;
+using MBS = SoulsFormats.FLVER.LayoutSemantic;
 using PIPE::Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using PIPE::Microsoft.Xna.Framework.Content.Pipeline;
 
@@ -29,7 +29,7 @@ namespace FBX2FLVER
         public string OutputFlverPath { get; set; } = null;
         public string OutputTpfPath { get; set; } = null;
 
-        public double ScalePercent { get; set; } = 100.0;
+        public double Scale { get; set; } = 1.0;
 
         public float SceneRotationY { get; set; } = 0;
         public float SceneRotationZ { get; set; } = 0;
@@ -50,7 +50,7 @@ namespace FBX2FLVER
 
         public bool UseAbsoluteVertPositions { get; set; } = true;
 
-        public SoulsFormats.FLVER.BufferLayout BufferLayout = null;
+        public SoulsFormats.FLVER2.BufferLayout BufferLayout = null;
 
         public bool GenerateLodAndMotionBlur = false;
 
@@ -59,14 +59,21 @@ namespace FBX2FLVER
         public string PlaceholderMaterialShaderName = "P_Metal[DSB]";
         public string PlaceholderMaterialName = "FBX2FLVER_Material";
 
+        public string FakeTextureDirectory = "";
+
+        public bool OnlyCreate1BufferLayout = false;
+
         public float NormalWValue = 0;
+
+        public float UVScaleX = 1;
+        public float UVScaleY = 1;
 
         public bool UseDirectBoneIndices = false;
 
         public byte Unk0x5CValue = 0;
         public int Unk0x68Value = 0;
 
-        public Action<SoulsFormats.FLVER, SoulsFormats.TPF> BeforeSaveAction = null;
+        public Action<SoulsFormats.FLVER2, SoulsFormats.TPF> BeforeSaveAction = null;
 
 
         // Gundam Unicorn: 0x20005, 0x2000E
@@ -109,11 +116,11 @@ namespace FBX2FLVER
         public void ChooseGamePreset(FlverGamePreset preset)
         {
             //Layout
-            BufferLayout = new SoulsFormats.FLVER.BufferLayout();
+            BufferLayout = new SoulsFormats.FLVER2.BufferLayout();
 
             void Member(MBT t, MBS s, int i = 0)
             {
-                var newMemb = new SoulsFormats.FLVER.BufferLayout.Member(0, t, s, i);
+                var newMemb = new SoulsFormats.FLVER.LayoutMember(t, s, i);
                 BufferLayout.Add(newMemb);
             }
 
@@ -156,10 +163,14 @@ namespace FBX2FLVER
                     TpfFlag2 = 3;
 
                     NormalWValue = 0;
+                    UVScaleX = 1;
+                    UVScaleY = 1;
                     PlaceholderMaterialShaderName = "P_Metal[DSB]";
                     UseDirectBoneIndices = false;
                     Unk0x5CValue = 0;
                     Unk0x68Value = 0;
+
+                    FakeTextureDirectory = "";
 
                     break;
                 case FlverGamePreset.DS1Skinned:
@@ -182,10 +193,14 @@ namespace FBX2FLVER
                     TpfFlag2 = 3;
 
                     NormalWValue = 0;
+                    UVScaleX = 1;
+                    UVScaleY = 1;
                     PlaceholderMaterialShaderName = "P_Metal[DSB]";
                     UseDirectBoneIndices = false;
                     Unk0x5CValue = 0;
                     Unk0x68Value = 0;
+
+                    FakeTextureDirectory = "";
 
                     break;
                 case FlverGamePreset.DS2Static:
@@ -209,10 +224,14 @@ namespace FBX2FLVER
                     TpfFlag2 = 3;
 
                     NormalWValue = -1;
+                    UVScaleX = 1;
+                    UVScaleY = 1;
                     PlaceholderMaterialShaderName = "W[Ibl][DSB]";
                     UseDirectBoneIndices = false;
                     Unk0x5CValue = 1;
                     Unk0x68Value = 1;
+
+                    FakeTextureDirectory = @"N:\FBX2FLVER\CustomTextures\";
 
                     break;
                 case FlverGamePreset.DS2Skinned:
@@ -237,11 +256,14 @@ namespace FBX2FLVER
                     TpfFlag2 = 3;
 
                     NormalWValue = -1;
+                    UVScaleX = 1;
+                    UVScaleY = 1;
                     PlaceholderMaterialShaderName = "W[Ibl][DSB]";
                     UseDirectBoneIndices = false;
                     Unk0x5CValue = 1;
-                    Unk0x68Value = 1;
+                    Unk0x68Value = 0;
 
+                    FakeTextureDirectory = @"N:\FBX2FLVER\CustomTextures\";
 
                     break;
                 case FlverGamePreset.DS3Static:
@@ -268,10 +290,14 @@ namespace FBX2FLVER
                     TpfFlag2 = 3;
 
                     NormalWValue = -1;
+                    UVScaleX = 1;
+                    UVScaleY = 1;
                     PlaceholderMaterialShaderName = "P_WP[ARSN]";
                     UseDirectBoneIndices = true;
                     Unk0x5CValue = 0;
                     Unk0x68Value = 4;
+
+                    FakeTextureDirectory = "";
 
                     break;
                 case FlverGamePreset.DS3Skinned:
@@ -298,10 +324,14 @@ namespace FBX2FLVER
                     TpfFlag2 = 3;
 
                     NormalWValue = -1;
+                    UVScaleX = 1;
+                    UVScaleY = 1;
                     PlaceholderMaterialShaderName = "P_BD[ARSN]";
                     UseDirectBoneIndices = true;
                     Unk0x5CValue = 0;
                     Unk0x68Value = 4;
+
+                    FakeTextureDirectory = "";
 
                     break;
                 default:
@@ -309,7 +339,7 @@ namespace FBX2FLVER
             }
         }
 
-        public static string GetBufferLayoutStringFromStruct(SoulsFormats.FLVER.BufferLayout bufferLayout)
+        public static string GetBufferLayoutStringFromStruct(SoulsFormats.FLVER2.BufferLayout bufferLayout)
         {
             var sb = new StringBuilder();
             foreach (var member in bufferLayout)

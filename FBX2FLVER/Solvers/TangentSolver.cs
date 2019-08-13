@@ -54,7 +54,7 @@ namespace FBX2FLVER.Solvers
             return ans;
         }
 
-        public List<Vector4> SolveTangents(SoulsFormats.FLVER.Mesh mesh, 
+        public List<Vector4> SolveTangents(SoulsFormats.FLVER2.Mesh mesh, 
             List<int> vertexIndices,
             List<Vector3> highQualityVertexNormals,
             List<Vector3> hqVertPositions,

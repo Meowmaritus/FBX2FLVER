@@ -134,7 +134,7 @@ namespace FBX2FLVER
                 }
                 else
                 {
-                    var loadedFile = SFHelper.ReadFile<FLVER>(this, browseDialog.FileName);
+                    var loadedFile = SFHelper.ReadFile<FLVER2>(this, browseDialog.FileName);
                     TextBoxFLVEROutputMain.Text = loadedFile.Uri;
                 }
             }
@@ -179,7 +179,7 @@ namespace FBX2FLVER
 
                 if (float.TryParse(TextBoxImportScalePercent.Text, out float scalePercent))
                 {
-                    Importer.JOBCONFIG.ScalePercent = scalePercent;
+                    Importer.JOBCONFIG.Scale = scalePercent / 100;
                 }
                 else
                 {
@@ -301,7 +301,7 @@ namespace FBX2FLVER
 
             if (browseDialog.ShowDialog() == true)
             {
-                var loadedFile = SFHelper.ReadFile<FLVER>(this, browseDialog.FileName);
+                var loadedFile = SFHelper.ReadFile<FLVER2>(this, browseDialog.FileName);
                 TextBoxImportSkeletonFLVER.Text = loadedFile.Uri;
             }
         }
